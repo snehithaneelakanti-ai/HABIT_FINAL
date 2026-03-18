@@ -32,12 +32,16 @@
   }
 
   function drawStarFace(cons) {
-    // mood: >0.7 happy, 0.4-0.7 neutral, <0.4 sad
+    // If the new CompletionStar module is loaded, let it handle rendering
+    if (window.CompletionStar) {
+      // The completion star is already rendered and updated via garden.js hooks
+      return;
+    }
+    // Fallback: simple star face
     const SVG_NS = 'http://www.w3.org/2000/svg';
     if (!starFaceSvg) return;
     starFaceSvg.innerHTML = '';
 
-    // Outer star shape
     const outerPath = document.createElementNS(SVG_NS, 'path');
     outerPath.setAttribute('d', 'M50 8L62 35H92L68 53L77 82L50 64L23 82L32 53L8 35H38Z');
     outerPath.setAttribute('fill', 'none');
@@ -45,25 +49,23 @@
     outerPath.setAttribute('stroke-width', '2');
     outerPath.setAttribute('stroke-linejoin', 'round');
 
-    // Eyes
     const eyeL = document.createElementNS(SVG_NS, 'circle');
     const eyeR = document.createElementNS(SVG_NS, 'circle');
     eyeL.setAttribute('cx', '38'); eyeL.setAttribute('cy', '44'); eyeL.setAttribute('r', '3');
     eyeR.setAttribute('cx', '62'); eyeR.setAttribute('cy', '44'); eyeR.setAttribute('r', '3');
     ['fill'].forEach(a => { eyeL.setAttribute(a, '#00ffd0'); eyeR.setAttribute(a, '#00ffd0'); });
 
-    // Mouth
     const mouth = document.createElementNS(SVG_NS, 'path');
     mouth.setAttribute('fill', 'none');
     mouth.setAttribute('stroke', '#00ffd0');
     mouth.setAttribute('stroke-width', '2.5');
     mouth.setAttribute('stroke-linecap', 'round');
     if (cons >= 0.7) {
-      mouth.setAttribute('d', 'M38 58 Q50 68 62 58'); // smile
+      mouth.setAttribute('d', 'M38 58 Q50 68 62 58');
     } else if (cons >= 0.4) {
-      mouth.setAttribute('d', 'M40 62 H60');           // neutral
+      mouth.setAttribute('d', 'M40 62 H60');
     } else {
-      mouth.setAttribute('d', 'M38 64 Q50 54 62 64'); // sad
+      mouth.setAttribute('d', 'M38 64 Q50 54 62 64');
     }
 
     [outerPath, eyeL, eyeR, mouth].forEach(el => starFaceSvg.appendChild(el));

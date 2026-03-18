@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/whimsy.css">
   <link rel="stylesheet" href="css/modal.css">
   <link rel="stylesheet" href="css/star-transition.css">
+  <link rel="stylesheet" href="css/completion-star.css">
 </head>
 <body class="world-bg">
 
@@ -154,6 +155,13 @@
               <div class="ticker-row">
                 <span class="ticker-num" id="ticker-num">0</span>
                 <span class="ticker-label"> of <%= total %> habits done</span>
+              </div>
+              <div class="greeting-star-row">
+                <div id="completion-star-container"></div>
+                <div>
+                  <div class="star-pct-label" id="star-pct-label">0%</div>
+                  <div class="star-sub-label">daily progress</div>
+                </div>
               </div>
               <button class="new-habit-btn" id="new-habit-btn" aria-haspopup="dialog"
                       onclick="document.querySelector('[data-tab=add]').click()">
@@ -333,6 +341,10 @@
               </div>
 
             </form>
+
+            <!-- Prebuilt Categories Container -->
+            <div id="prebuilt-habits-container" class="prebuilt-container"></div>
+
           </div>
         </div>
       </div><!-- /sec-add -->
@@ -556,6 +568,7 @@
   <script src="js/star-transition.js?v=2"></script>
   <script src="js/shell.js?v=2"></script>
   <script src="js/greeting.js?v=2"></script>
+  <script src="js/completion-star.js?v=2"></script>
   <script src="js/garden.js?v=2"></script>
   <script src="js/report.js?v=2"></script>
   <script src="js/graphs.js?v=2"></script>

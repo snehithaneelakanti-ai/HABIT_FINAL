@@ -137,6 +137,109 @@
   color: var(--teal);
 }
 
+/* ============================================
+   PREBUILT HABIT CATEGORIES
+   ============================================ */
+.prebuilt-container {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.prebuilt-category {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.prebuilt-header h3 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.prebuilt-header p {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+}
+
+.prebuilt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.prebuilt-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 14px;
+  border-radius: 12px;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.prebuilt-card:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(0,255,208,0.2);
+  transform: translateY(-2px);
+}
+
+.prebuilt-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(0,255,208,0.08);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prebuilt-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.prebuilt-name {
+  flex-grow: 1;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.3;
+}
+
+.add-prebuilt-btn {
+  background: rgba(0,255,208,0.1);
+  color: var(--teal);
+  border: 1px solid rgba(0,255,208,0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.add-prebuilt-btn:hover {
+  background: var(--teal);
+  color: var(--db-bg);
+}
+
+.add-prebuilt-btn.added {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  border-color: transparent;
+  pointer-events: none;
+}
+
 /* Color/theme picker */
 .color-group {
   display: flex;

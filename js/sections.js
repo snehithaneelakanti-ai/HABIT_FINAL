@@ -164,6 +164,9 @@
         submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Plant Habit';
       }
     });
+
+    // Render the custom prebuilt habit categories
+    renderPrebuiltHabits();
   }
 
   function showStatus(el, msg, isError) {
@@ -171,6 +174,105 @@
     el.textContent = msg;
     el.className = 'form-status show' + (isError ? ' error' : '');
     setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  /* ══════════════════════════════════════════
+     SECTION: ADD HABIT — PREBUILT CATEGORIES
+     ══════════════════════════════════════════ */
+  function renderPrebuiltHabits() {
+    const container = document.getElementById('prebuilt-habits-container');
+    if (!container) return;
+
+    const PREBUILT_CATEGORIES = [
+      {
+        title: '🌸 Cute Life Habits',
+        desc: 'Small actions that improve daily life and create a sense of routine and aesthetic satisfaction.',
+        habits: [
+          { name: 'Plan outfit for tomorrow', icon: 'star' },
+          { name: 'Keep your space clean', icon: 'water' },
+          { name: 'Organize one small thing', icon: 'leaf' },
+          { name: 'Take one photo', icon: 'sun' },
+          { name: 'Do something that makes your day feel special', icon: 'heart' }
+        ]
+      },
+      {
+        title: '🌱 Bare Minimum Habits (Low-Energy Mode)',
+        desc: 'For days when you feel low energy or overwhelmed. Completing even one feels like a win.',
+        habits: [
+          { name: 'Drink water', icon: 'water' },
+          { name: 'Wash face', icon: 'water' },
+          { name: 'Get out of bed', icon: 'sun' },
+          { name: 'Do one small task', icon: 'leaf' },
+          { name: 'Take a few deep breaths', icon: 'leaf' }
+        ]
+      }
+    ];
+
+    let html = '';
+    PREBUILT_CATEGORIES.forEach(cat => {
+      let gridHtml = '';
+      cat.habits.forEach(h => {
+        gridHtml += `
+          <div class="prebuilt-card">
+            <div class="prebuilt-icon">${ICONS[h.icon] || ICONS.leaf}</div>
+            <span class="prebuilt-name">${esc(h.name)}</span>
+            <button type="button" class="add-prebuilt-btn" data-name="${esc(h.name)}" data-icon="${h.icon}" aria-label="Add ${esc(h.name)}">+ Add</button>
+          </div>
+        `;
+      });
+
+      html += `
+        <div class="prebuilt-category">
+          <div class="prebuilt-header">
+            <h3>${cat.title}</h3>
+            <p>${cat.desc}</p>
+          </div>
+          <div class="prebuilt-grid">
+            ${gridHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+
+    // Attach click listeners to + Add buttons
+    container.querySelectorAll('.add-prebuilt-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const name = this.dataset.name;
+        const icon_key = this.dataset.icon;
+        const prevText = this.textContent;
+        this.textContent = '...';
+        this.disabled = true;
+
+        try {
+          const body = new URLSearchParams({ name, icon_key });
+          const res = await fetch(BASE + '/HabitServlet', {
+            method: 'POST', body,
+            headers: { 'Accept': 'application/json' }
+          });
+          const data = await res.json();
+          if (res.ok && data.ok) {
+            this.textContent = '✓ Added';
+            this.classList.add('added');
+            // Show a global status or use the form's status area just for feedback
+            const status = document.getElementById('ah-status');
+            if (status) showStatus(status, '🌱 ' + name + ' added!', false);
+            
+            // Re-render garden dashboard if active
+            if (typeof loadHabits === 'function') loadHabits(); 
+          } else {
+            this.textContent = prevText;
+            this.disabled = false;
+            alert(data.error || 'Failed to add habit');
+          }
+        } catch (_) {
+          this.textContent = prevText;
+          this.disabled = false;
+          alert('Connection error');
+        }
+      });
+    });
   }
 
   /* ══════════════════════════════════════════

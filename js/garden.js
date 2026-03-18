@@ -558,6 +558,7 @@
     const total = tiles.length;
     const bar   = document.getElementById('garden-progress-fill');
     if (bar) bar.style.width = total > 0 ? `${(done / total) * 100}%` : '0';
+    if (window.CompletionStar) window.CompletionStar.update();
   }
 
   function updateTicker() {

@@ -1,0 +1,172 @@
+/* completion-star.css — Daily Completion Star */
+
+/* ============================================
+   STAR CONTAINER
+   ============================================ */
+.completion-star-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+  margin: 8px 0;
+  transition: filter 0.8s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 0 0px transparent);
+}
+
+.completion-star-wrap.star-complete {
+  filter: drop-shadow(0 0 18px rgba(255, 215, 120, 0.6))
+          drop-shadow(0 0 40px rgba(255, 200, 80, 0.25));
+  animation: starBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.completion-star-wrap svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ============================================
+   LIQUID FILL — smooth rise transition
+   ============================================ */
+.star-liquid-group {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================
+   WAVE LAYERS — subtle horizontal drift
+   Each layer also has SVG <animate> morphing
+   the wave path. The CSS adds a gentle sway.
+   ============================================ */
+.star-wave-1 {
+  animation: waveDrift1 6s ease-in-out infinite;
+}
+.star-wave-2 {
+  animation: waveDrift2 5s ease-in-out infinite;
+}
+.star-wave-3 {
+  animation: waveDrift3 4s ease-in-out infinite;
+}
+.star-wave-4 {
+  animation: waveDrift4 7s ease-in-out infinite;
+}
+
+@keyframes waveDrift1 {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-6px); }
+}
+@keyframes waveDrift2 {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(5px); }
+}
+@keyframes waveDrift3 {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-4px); }
+}
+@keyframes waveDrift4 {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(3px); }
+}
+
+/* ============================================
+   BUBBLES — gentle rising particles
+   ============================================ */
+.star-bubble {
+  opacity: 0;
+}
+
+/* ============================================
+   FACE MORPH TRANSITIONS
+   ============================================ */
+.star-eye-left,
+.star-eye-right,
+.star-mouth {
+  transition: d 0.6s ease, opacity 0.4s ease;
+}
+
+.star-eye-left,
+.star-eye-right {
+  fill: none;
+  stroke: rgba(80, 50, 20, 0.7);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.star-mouth {
+  fill: none;
+  stroke: rgba(80, 50, 20, 0.7);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ============================================
+   STAR OUTLINE
+   ============================================ */
+.star-outline {
+  fill: none;
+  stroke: rgba(255, 215, 120, 0.3);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+
+.star-complete .star-outline {
+  stroke: rgba(255, 215, 120, 0.7);
+}
+
+/* ============================================
+   BOUNCE ANIMATION (100% state)
+   ============================================ */
+@keyframes starBounce {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.12); }
+  40%  { transform: scale(0.95); }
+  60%  { transform: scale(1.06); }
+  80%  { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================
+   STAR IN GREETING CELL
+   ============================================ */
+.greeting-star-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  opacity: 0;
+  animation: greetIn 0.8s ease forwards 900ms;
+}
+
+.star-pct-label {
+  font-family: var(--font-num);
+  font-size: 2rem;
+  font-weight: 200;
+  color: rgba(255, 215, 120, 0.8);
+  line-height: 1;
+  transition: color 0.5s ease;
+}
+
+.star-complete .star-pct-label,
+.star-complete ~ .star-pct-label {
+  color: rgba(255, 215, 120, 1);
+}
+
+.star-sub-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 2px;
+}
+
+/* ============================================
+   REPORT SECTION STAR (smaller)
+   ============================================ */
+.report-star-wrap {
+  width: 80px;
+  height: 80px;
+}
+
+.report-star-wrap .completion-star-wrap {
+  width: 80px;
+  height: 80px;
+}
