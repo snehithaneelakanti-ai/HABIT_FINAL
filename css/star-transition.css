@@ -1,0 +1,37 @@
+/* star-transition.css — Module 4: The Transition */
+
+.star-bloom-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.bloom-star-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity   0.4s ease;
+}
+
+.bloom-star-svg.active {
+  transform: translate(-50%, -50%) scale(120);
+  opacity: 1;
+}
+
+/* Burst particles */
+.burst-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform, opacity;
+}

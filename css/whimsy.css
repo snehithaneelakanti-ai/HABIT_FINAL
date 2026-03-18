@@ -1,0 +1,55 @@
+/* whimsy.css — Module 10: The Whimsy */
+
+.whimsy-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+}
+
+/* Fairies */
+.fairy {
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+.fairy svg {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 0 6px rgba(180,150,255,0.7));
+}
+
+/* Petals */
+.petal {
+  position: absolute;
+  will-change: transform, opacity;
+  border-radius: 50% 0 50% 50%;
+  background: rgba(255,180,220,0.35);
+  filter: blur(1.5px);
+}
+
+/* Hydrangea corners */
+.hydrangea {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.18;
+}
+
+.hydrangea-bl {
+  bottom: -10px; left: 0;
+  animation: sway 18s ease-in-out infinite;
+  transform-origin: bottom left;
+}
+
+.hydrangea-br {
+  bottom: -10px; right: 0;
+  animation: sway 22s ease-in-out infinite reverse;
+  transform-origin: bottom right;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50%       { transform: rotate(3deg); }
+}

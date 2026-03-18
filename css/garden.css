@@ -1,0 +1,488 @@
+/* garden.css — Module 6: The Habit Garden */
+
+/* ═══════════════════════════════════════════════════
+   PASTEL PLANT PALETTE TOKENS
+   ═══════════════════════════════════════════════════ */
+:root {
+  /* Plant type palette — soft pastels */
+  --plant-mint:    #a8f0d8;
+  --plant-rose:    #f9bfd4;
+  --plant-sky:     #a3d4f7;
+  --plant-lemon:   #f7e6a3;
+  --plant-lavender:#c9b8f5;
+  --plant-peach:   #f9cfa8;
+  --plant-sage:    #b5d9b0;
+  --plant-lilac:   #d8b8f5;
+
+  /* Stem / soil tones */
+  --stem-green:    #5ab870;
+  --stem-dark:     #3a7d50;
+  --soil-brown:    rgba(100, 60, 20, 0.35);
+
+  /* Glow per plant type */
+  --glow-mint:     rgba(168, 240, 216, 0.45);
+  --glow-rose:     rgba(249, 191, 212, 0.45);
+  --glow-sky:      rgba(163, 212, 247, 0.45);
+  --glow-lemon:    rgba(247, 230, 163, 0.45);
+  --glow-lavender: rgba(201, 184, 245, 0.45);
+  --glow-peach:    rgba(249, 207, 168, 0.45);
+  --glow-sage:     rgba(181, 217, 176, 0.45);
+  --glow-lilac:    rgba(216, 184, 245, 0.45);
+}
+
+/* ═══════════════════════════════════════════════════
+   GARDEN HEADER
+   ═══════════════════════════════════════════════════ */
+.garden-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+}
+
+.garden-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.85);
+}
+
+.garden-progress-track {
+  flex: 1;
+  max-width: 200px;
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.garden-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--plant-mint), #00ffd0);
+  border-radius: 3px;
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 8px rgba(0,255,208,0.3);
+}
+
+/* ═══════════════════════════════════════════════════
+   HABIT GRID  — garden bed layout
+   ═══════════════════════════════════════════════════ */
+.habit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+/* ═══════════════════════════════════════════════════
+   HABIT TILE  — the plant pot
+   ═══════════════════════════════════════════════════ */
+.habit-tile {
+  position: relative;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 0 0 14px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  user-select: none;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.25s ease;
+  /* minimum tile height driven by stage */
+  min-height: 160px;
+}
+
+/* Soil strip at the bottom of each pot */
+.habit-tile::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 28px;
+  background: linear-gradient(to top, rgba(80,40,10,0.28) 0%, transparent 100%);
+  border-radius: 0 0 20px 20px;
+  pointer-events: none;
+}
+
+.habit-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+
+/* ─── Active (tap-done) state ─── */
+.habit-tile.done {
+  border-color: rgba(168, 240, 216, 0.4);
+  background: rgba(168, 240, 216, 0.05);
+  box-shadow: 0 4px 24px rgba(168, 240, 216, 0.12);
+}
+
+/* ─── Drooping (missed today) ─── */
+.habit-tile.drooping .plant-body {
+  transform-origin: bottom center;
+  animation: plantDroop 3s ease-in-out infinite;
+}
+
+@keyframes plantDroop {
+  0%, 100% { transform: rotate(0deg);   }
+  30%       { transform: rotate(-6deg); }
+  70%       { transform: rotate(6deg);  }
+}
+
+/* ═══════════════════════════════════════════════════
+   DONE BADGE — small glowing dot top-right
+   ═══════════════════════════════════════════════════ */
+.habit-done-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  background: transparent;
+  z-index: 5;
+}
+
+.habit-tile.done .habit-done-badge {
+  border-color: var(--teal);
+  background: var(--teal);
+  box-shadow: 0 0 10px rgba(0,255,208,0.5);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.5 7L5.5 10L11.5 4' stroke='%23020810' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════
+   PLANT BODY  — SVG illustration area
+   ═══════════════════════════════════════════════════ */
+.plant-body {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: 14px;
+  padding-bottom: 4px;
+  flex: 1;
+  position: relative;
+  /* animate transitions between growth stages */
+  transition: transform 0.5s ease;
+}
+
+.plant-body svg {
+  /* Scale based on growth stage */
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s;
+  transform-origin: bottom center;
+}
+
+/* ─── Growth stage scale multipliers ─── */
+.plant-stage-0 .plant-body svg { transform: scale(0.55); opacity: 0.7; }  /* Seed */
+.plant-stage-1 .plant-body svg { transform: scale(0.75); }               /* Sprout 1-2 */
+.plant-stage-2 .plant-body svg { transform: scale(0.90); }               /* Growing 3-6 */
+.plant-stage-3 .plant-body svg { transform: scale(1.05); }               /* Bloom 7-13 */
+.plant-stage-4 .plant-body svg { transform: scale(1.20); }               /* Flourish 14-29 */
+.plant-stage-5 .plant-body svg { transform: scale(1.40); }               /* Guardian 30+ */
+
+/* Done state — plant brightens */
+.habit-tile.done .plant-body svg {
+  filter: saturate(1.4) brightness(1.15);
+}
+
+/* ─── Bloom arrival animation ─── */
+.plant-bloom-enter {
+  animation: bloomGrow 0.8s cubic-bezier(0.34, 1.28, 0.64, 1) both;
+}
+
+@keyframes bloomGrow {
+  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════
+   STREAK FLOWERS  — float above plant on streak
+   ═══════════════════════════════════════════════════ */
+.streak-flowers {
+  position: absolute;
+  top: 4px; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.streak-flower {
+  width: 14px; height: 14px;
+  opacity: 0;
+  animation: flowerFloat 2.5s ease-in-out infinite;
+}
+
+.streak-flower:nth-child(1) { animation-delay: 0s; }
+.streak-flower:nth-child(2) { animation-delay: 0.4s; }
+.streak-flower:nth-child(3) { animation-delay: 0.8s; }
+.streak-flower:nth-child(4) { animation-delay: 1.2s; }
+.streak-flower:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes flowerFloat {
+  0%   { opacity: 0;   transform: translateY(0) scale(0.6); }
+  20%  { opacity: 1;   transform: translateY(-4px) scale(1); }
+  80%  { opacity: 0.7; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0;   transform: translateY(-16px) scale(0.6); }
+}
+
+/* ═══════════════════════════════════════════════════
+   PLANT INFO — name + stage pill
+   ═══════════════════════════════════════════════════ */
+.plant-info {
+  width: 100%;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.habit-name {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.habit-hatch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.06);
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-family: var(--font-body);
+  transition: color 0.25s, background 0.25s;
+}
+
+.habit-tile.done .habit-hatch-pill {
+  color: var(--teal);
+  background: rgba(0,255,208,0.1);
+}
+
+/* Stage-specific pill colors */
+.plant-stage-5 .habit-hatch-pill { color: var(--plant-lemon); background: rgba(247,230,163,0.12); }
+.plant-stage-4 .habit-hatch-pill { color: var(--plant-lavender); background: rgba(201,184,245,0.12); }
+.plant-stage-3 .habit-hatch-pill { color: var(--plant-rose); background: rgba(249,191,212,0.12); }
+
+/* ═══════════════════════════════════════════════════
+   RIPPLE  — click feedback
+   ═══════════════════════════════════════════════════ */
+.habit-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(168, 240, 216, 0.25);
+  transform: scale(0);
+  animation: habitRipple 0.65s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes habitRipple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════
+   HOVER STAT OVERLAY — slide-up glass panel
+   ═══════════════════════════════════════════════════ */
+.habit-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: rgba(2,8,20,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.habit-tile:hover .habit-overlay {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.overlay-title {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--plant-mint);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overlay-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.overlay-label {
+  font-size: 0.6rem;
+  font-family: var(--font-body);
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.overlay-val {
+  font-size: 0.83rem;
+  font-family: var(--font-num);
+  color: rgba(255,255,255,0.85);
+}
+
+.overlay-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 1px 0;
+}
+
+.overlay-today {
+  margin-top: auto;
+  font-size: 0.68rem;
+  font-family: var(--font-body);
+  color: rgba(255,255,255,0.22);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 5px;
+}
+
+.overlay-today.logged { color: rgba(168,240,216,0.65); }
+
+/* ═══════════════════════════════════════════════════
+   PLANT COLOUR THEMES  — border + glow per icon
+   ═══════════════════════════════════════════════════ */
+.habit-tile[data-plant="leaf"]:hover,
+.habit-tile[data-plant="leaf"].done   { border-color: rgba(168,240,216,0.4); box-shadow: 0 8px 32px rgba(168,240,216,0.12); }
+.habit-tile[data-plant="water"]:hover,
+.habit-tile[data-plant="water"].done  { border-color: rgba(163,212,247,0.4); box-shadow: 0 8px 32px rgba(163,212,247,0.12); }
+.habit-tile[data-plant="sun"]:hover,
+.habit-tile[data-plant="sun"].done    { border-color: rgba(247,230,163,0.4); box-shadow: 0 8px 32px rgba(247,230,163,0.12); }
+.habit-tile[data-plant="moon"]:hover,
+.habit-tile[data-plant="moon"].done   { border-color: rgba(201,184,245,0.4); box-shadow: 0 8px 32px rgba(201,184,245,0.12); }
+.habit-tile[data-plant="book"]:hover,
+.habit-tile[data-plant="book"].done   { border-color: rgba(249,191,212,0.4); box-shadow: 0 8px 32px rgba(249,191,212,0.12); }
+.habit-tile[data-plant="heart"]:hover,
+.habit-tile[data-plant="heart"].done  { border-color: rgba(249,191,212,0.5); box-shadow: 0 8px 32px rgba(249,191,212,0.16); }
+.habit-tile[data-plant="star"]:hover,
+.habit-tile[data-plant="star"].done   { border-color: rgba(247,230,163,0.5); box-shadow: 0 8px 32px rgba(247,230,163,0.16); }
+.habit-tile[data-plant="run"]:hover,
+.habit-tile[data-plant="run"].done    { border-color: rgba(181,217,176,0.4); box-shadow: 0 8px 32px rgba(181,217,176,0.12); }
+
+/* ═══════════════════════════════════════════════════
+   MILESTONE PULSE — triggered when habit completes
+   ═══════════════════════════════════════════════════ */
+@keyframes milestonePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(168,240,216,0.6); }
+  50%  { box-shadow: 0 0 0 16px rgba(168,240,216,0); }
+  100% { box-shadow: 0 0 0 0   rgba(168,240,216,0); }
+}
+
+.habit-tile.milestone-pulse {
+  animation: milestonePulse 0.8s ease-out;
+}
+
+/* ═══════════════════════════════════════════════════
+   EMPTY GARDEN STATE
+   ═══════════════════════════════════════════════════ */
+.garden-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 44px 20px;
+  color: rgba(255,255,255,0.22);
+  text-align: center;
+}
+
+.garden-empty svg   { width: 52px; height: 52px; opacity: 0.3; }
+.garden-empty p     { font-size: 0.85rem; font-family: var(--font-body); }
+
+/* ═══════════════════════════════════════════════════
+   HIDDEN UTILITY
+   ═══════════════════════════════════════════════════ */
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════
+   INTELLIGENCE CARD  (unchanged)
+   ═══════════════════════════════════════════════════ */
+#intelligence-box { margin-bottom: 24px; }
+
+.intelligence-card {
+  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(0,255,208,0.08));
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  animation: intelSlideIn 0.6s cubic-bezier(0.2,0.8,0.2,1) both;
+  position: relative;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.intelligence-card.dismissed { animation: intelSlideOut 0.4s ease forwards; }
+
+@keyframes intelSlideIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes intelSlideOut {
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+.intel-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: rgba(139,92,246,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--purple); flex-shrink: 0;
+}
+.intel-icon svg { width: 20px; height: 20px; }
+.intel-content  { flex: 1; }
+.intel-header   { font-family: var(--font-display); font-size: 0.95rem; color: var(--purple); margin-bottom: 4px; letter-spacing: 0.02em; }
+.intel-text     { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 12px; }
+.intel-text strong { color: var(--white); font-weight: 500; }
+.intel-actions  { display: flex; gap: 10px; }
+.intel-btn      { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: var(--font-body); }
+.intel-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); color: var(--white); }
+.intel-btn.accept { background: var(--purple); border-color: var(--purple); color: var(--white); }
+.intel-btn.accept:hover { background: #7c3aed; box-shadow: 0 4px 12px rgba(139,92,246,0.3); }

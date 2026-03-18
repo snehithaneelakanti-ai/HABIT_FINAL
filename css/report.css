@@ -1,0 +1,68 @@
+/* report.css — Module 8: The Report */
+
+.report-cell {
+  gap: 16px;
+}
+
+/* Star Face */
+#star-face-svg {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 0 12px rgba(0,255,208,0.3));
+  transition: filter 0.5s;
+}
+
+/* Report Row */
+.report-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.report-text { flex: 1; }
+
+.report-message {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.streak-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 12px;
+  color: rgba(255,255,255,0.45);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+}
+
+.streak-big {
+  font-family: var(--font-num);
+  font-size: 2rem;
+  font-weight: 200;
+  color: var(--teal);
+  line-height: 1;
+}
+
+/* Consistency Bar */
+.consistency-track {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.consistency-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple) 0%, var(--teal) 100%);
+  width: 0;
+  transition: width 1.2s ease;
+  border-radius: 2px;
+}

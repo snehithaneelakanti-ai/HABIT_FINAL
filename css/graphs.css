@@ -1,0 +1,97 @@
+/* graphs.css — SVG graph cells */
+
+/* Ring Chart */
+.ring-chart-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  margin-top: 8px;
+}
+
+.ring-svg { flex-shrink: 0; overflow: visible; }
+
+.ring-track {
+  fill: none;
+  stroke: rgba(255,255,255,0.07);
+}
+
+.ring-fill {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.ring-text-val {
+  font-family: var(--font-num);
+  font-size: 22px;
+  font-weight: 300;
+  fill: var(--teal);
+  dominant-baseline: central;
+  text-anchor: middle;
+}
+
+.ring-text-label {
+  font-family: var(--font-body);
+  font-size: 7px;
+  fill: rgba(255,255,255,0.35);
+  dominant-baseline: central;
+  text-anchor: middle;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Bar Chart (7-day weekly) */
+.bar-chart-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar-chart-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  font-family: var(--font-body);
+  margin-bottom: 4px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-day {
+  width: 24px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+  background: linear-gradient(90deg, var(--teal-2) 0%, var(--teal) 100%);
+}
+
+.bar-count {
+  width: 20px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.35);
+  font-family: var(--font-num);
+}

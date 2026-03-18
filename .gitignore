@@ -1,0 +1,28 @@
+# Compiled classes
+WEB-INF/classes/
+
+# H2 Database files
+*.db
+*.mv.db
+*.trace.db
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Build artifacts
+*.war
+*.zip
+Final_Delivery/
+
+# Temp/seed scripts
+seed_demo.jsp
+seed_intelligence.jsp
+
+# Node
+node_modules/
+
+# Sessions docs
+sessions/

@@ -1,0 +1,146 @@
+/* navbar.css — Top Navigation Bar */
+
+/* ---------- Top Nav Bar ---------- */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+
+  /* Glass background — lets the starfield show through */
+  background: rgba(2, 8, 16, 0.48);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+  /* Subtle teal-glow inner shadow at bottom */
+  box-shadow:
+    0 1px 0 0 rgba(0, 255, 208, 0.06),
+    0 4px 32px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Brand ---------- */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  user-select: none;
+}
+
+.nav-brand-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--teal);
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 208, 0.5));
+}
+
+.nav-brand-text {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--teal);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 208, 0.35));
+}
+
+/* ---------- Nav Links ---------- */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-links li a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.52);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+}
+
+.nav-links li a svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  transition: filter 0.22s ease;
+}
+
+/* Hover state */
+.nav-links li a:hover {
+  background: rgba(0, 255, 208, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 0 0 1px rgba(0, 255, 208, 0.12) inset;
+}
+
+/* Active / current page */
+.nav-links li a.active {
+  background: rgba(0, 255, 208, 0.08);
+  color: var(--teal);
+  box-shadow: 0 0 0 1px rgba(0, 255, 208, 0.18) inset;
+}
+
+.nav-links li a.active svg {
+  filter: drop-shadow(0 0 4px rgba(0, 255, 208, 0.6));
+}
+
+/* Active underline accent */
+.nav-links li a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 16px;
+  right: 16px;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  border-radius: 1px;
+  opacity: 0.7;
+}
+
+/* ---------- Sign Out link ---------- */
+.nav-links li a.nav-logout {
+  color: rgba(255, 100, 100, 0.6);
+  margin-left: 8px;
+}
+
+.nav-links li a.nav-logout:hover {
+  background: rgba(255, 80, 80, 0.08);
+  color: #ff9999;
+  box-shadow: 0 0 0 1px rgba(255, 80, 80, 0.15) inset;
+}
+
+/* ---------- Divider before logout ---------- */
+.nav-links .nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 6px;
+}
+
+/* ---------- App Shell with top nav ---------- */
+/* Override the horizontal sidebar flex layout */
+.app-shell.top-nav-mode {
+  flex-direction: column;
+  padding-top: 60px;   /* exact navbar height */
+}
+
+.app-shell.top-nav-mode .dashboard-main {
+  padding-top: 28px;
+}
