@@ -106,6 +106,31 @@ app.get('/LogoutServlet', (req, res) => {
     res.redirect('/entry.html');
 });
 
+// OAuth Mock Servlet
+app.get('/OAuthServlet', async (req, res) => {
+    const provider = req.query.provider || 'demo';
+    const email = `${provider}_user@oauth.mock`;
+    const name = `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`;
+    
+    try {
+        const [existing] = await pool.query('SELECT * FROM Users WHERE email = ?', [email]);
+        if (existing.length > 0) {
+            req.session.user = existing[0];
+        } else {
+            const [result] = await pool.query('INSERT INTO Users (name, email, password_hash) VALUES (?, ?, ?)', [name, email, 'oauth_mock_pass']);
+            req.session.user = {
+                user_id: result.insertId,
+                name: name,
+                email: email
+            };
+        }
+        res.redirect('/DashboardServlet');
+    } catch (err) {
+        console.error("OAuth Mock Error:", err);
+        res.redirect('/entry.html?error=oauth_failed');
+    }
+});
+
 // Admin Login
 app.get('/admin_login.jsp', (req, res) => {
     res.render('admin_login.jsp', { error: req.query.error });
