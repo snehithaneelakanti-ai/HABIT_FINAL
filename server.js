@@ -192,10 +192,10 @@ app.get('/DashboardServlet', requireAuth, async (req, res) => {
         // 7-day consistency
         const [consRows] = await pool.query(`
             SELECT 
-                COUNT(CASE WHEN completed = TRUE THEN 1 END) AS completed_count,
+                COUNT(CASE WHEN completed = TRUE OR completed = 1 THEN 1 END) AS completed_count,
                 COUNT(*) AS total_logs
             FROM HabitLogs
-            WHERE user_id = ? AND log_date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+            WHERE user_id = ? AND log_date >= date('now', '-7 day')
         `, [userId]);
         
         let consistency = 0;
@@ -306,8 +306,8 @@ app.post('/HabitLogServlet', requireAuth, async (req, res) => {
         await pool.query(`
             INSERT INTO HabitLogs (habit_id, user_id, log_date, completed) 
             VALUES (?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE completed = ?
-        `, [habit_id, userId, today, isCompleted, isCompleted]);
+            ON CONFLICT(habit_id, user_id, log_date) DO UPDATE SET completed = excluded.completed
+        `, [habit_id, userId, today, isCompleted]);
         
         await engine.evaluateStreak(habit_id, userId);
         res.json({ ok: true });
@@ -324,10 +324,10 @@ app.get('/ReportServlet', requireAuth, async (req, res) => {
     try {
         const [consRows] = await pool.query(`
             SELECT 
-                COUNT(CASE WHEN completed = TRUE THEN 1 END) AS completed_count,
+                COUNT(CASE WHEN completed = TRUE OR completed = 1 THEN 1 END) AS completed_count,
                 COUNT(*) AS total_logs
             FROM HabitLogs
-            WHERE user_id = ? AND log_date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+            WHERE user_id = ? AND log_date >= date('now', '-7 day')
         `, [userId]);
         
         let consistency = 0;

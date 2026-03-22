@@ -1,89 +1,100 @@
-const mysql = require('mysql2/promise');
+const sqlite3 = require('sqlite3');
+const { open } = require('sqlite');
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'karthiksoul123#',
-    database: 'habitgarden',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+let dbPromise = null;
+
+async function getDb() {
+    if (!dbPromise) {
+        dbPromise = open({
+            filename: './habitgarden.db',
+            driver: sqlite3.Database
+        });
+    }
+    return dbPromise;
+}
+
+const pool = {
+    query: async (sql, params) => {
+        const db = await getDb();
+        if (sql.trim().toUpperCase().startsWith('SELECT')) {
+            const rows = await db.all(sql, params);
+            return [rows];
+        } else if (sql.trim().toUpperCase().startsWith('INSERT')) {
+            if (sql.includes('ON DUPLICATE KEY UPDATE')) {
+                sql = sql.replace('ON DUPLICATE KEY UPDATE completed = ?', 'ON CONFLICT(habit_id, user_id, log_date) DO UPDATE SET completed = excluded.completed');
+                if (params && params.length === 5) {
+                    params = params.slice(0, 4);
+                }
+            }
+            const result = await db.run(sql, params);
+            return [{ insertId: result.lastID }];
+        } else {
+            const result = await db.run(sql, params);
+            return [result];
+        }
+    }
+};
 
 async function initDB() {
     try {
-        // Create DB if not exists
-        const rootPool = mysql.createPool({
-            host: 'localhost',
-            user: 'root',
-            password: 'karthiksoul123#'
-        });
-        await rootPool.query("CREATE DATABASE IF NOT EXISTS habitgarden");
-        await rootPool.end();
-
-        // Initialize tables
-        const createUsers = `
+        const db = await getDb();
+        
+        await db.exec(`
             CREATE TABLE IF NOT EXISTS Users (
-                user_id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                email VARCHAR(100) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
+                user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        `;
+        `);
         
-        const createHabits = `
+        await db.exec(`
             CREATE TABLE IF NOT EXISTS Habits (
-                habit_id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT,
-                habit_name VARCHAR(100) NOT NULL,
-                frequency VARCHAR(50) DEFAULT 'daily',
+                habit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                habit_name TEXT NOT NULL,
+                frequency TEXT DEFAULT 'daily',
                 start_date DATE NOT NULL,
-                status VARCHAR(20) DEFAULT 'active',
-                icon_key VARCHAR(50) DEFAULT 'leaf',
+                status TEXT DEFAULT 'active',
+                icon_key TEXT DEFAULT 'leaf',
                 FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
             )
-        `;
+        `);
         
-        const createHabitLogs = `
+        await db.exec(`
             CREATE TABLE IF NOT EXISTS HabitLogs (
-                log_id INT AUTO_INCREMENT PRIMARY KEY,
-                habit_id INT,
-                user_id INT,
+                log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                habit_id INTEGER,
+                user_id INTEGER,
                 log_date DATE NOT NULL,
-                completed BOOLEAN DEFAULT FALSE,
+                completed BOOLEAN DEFAULT 0,
                 FOREIGN KEY (habit_id) REFERENCES Habits(habit_id) ON DELETE CASCADE,
                 FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-                UNIQUE KEY unique_log (habit_id, user_id, log_date)
+                UNIQUE (habit_id, user_id, log_date)
             )
-        `;
+        `);
         
-        const createStreaks = `
+        await db.exec(`
             CREATE TABLE IF NOT EXISTS Streaks (
-                streak_id INT AUTO_INCREMENT PRIMARY KEY,
-                habit_id INT,
-                user_id INT,
-                current_streak INT DEFAULT 0,
-                longest_streak INT DEFAULT 0,
+                streak_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                habit_id INTEGER,
+                user_id INTEGER,
+                current_streak INTEGER DEFAULT 0,
+                longest_streak INTEGER DEFAULT 0,
                 last_updated DATE,
                 FOREIGN KEY (habit_id) REFERENCES Habits(habit_id) ON DELETE CASCADE,
                 FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-                UNIQUE KEY unique_streak (habit_id, user_id)
+                UNIQUE (habit_id, user_id)
             )
-        `;
-
-        await pool.query(createUsers);
-        await pool.query(createHabits);
-        await pool.query(createHabitLogs);
-        await pool.query(createStreaks);
+        `);
         
-        console.log("[HabitGarden] Database schema initialized successfully.");
+        console.log("[HabitGarden] SQLite schema initialized successfully.");
     } catch (err) {
         console.error("[HabitGarden] Database initialization failed:", err);
     }
 }
 
-// Auto-initialize when required
 initDB();
 
 module.exports = pool;
