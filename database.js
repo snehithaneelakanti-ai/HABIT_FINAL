@@ -6,7 +6,7 @@ let dbPromise = null;
 async function getDb() {
     if (!dbPromise) {
         dbPromise = open({
-            filename: './habitgarden.db',
+            filename: process.env.DB_PATH || './habitgarden.db',
             driver: sqlite3.Database
         });
     }
